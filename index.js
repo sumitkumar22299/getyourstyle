@@ -1,15 +1,25 @@
 const express = require('express');
+const path = require('path');
 const app = express();
-const PORT = process.env.PORT || 80; // Set the default port to 80
+
+// Get the environment from the command line argument or default to 'development'
+const environment = process.argv[2] || 'development';
+
+// Set port based on environment
+let port;
+if (environment === 'prod') {
+  port = process.env.PORT || 80; // Set to default port 80 in production
+} else {
+  port = process.env.PORT || 3000; // Set to default port 3000 in other environments (like 'dev')
+}
 
 app.get('/', function (req, res) {
   res.send('Welcome Sumit');
 });
 
-app.get('/FortnieReq', function (req, res) {
-  res.sendFile(__dirname + '/public/index.html');
-});
+// Serve the static website from a specific URL
+app.use('/FortnieReq', express.static(path.join(__dirname, 'public')));
 
-app.listen(PORT, function () {
-  console.log(`Example app listening on port ${PORT}!`);
+app.listen(port, function () {
+  console.log(`Example app listening on port ${port} in ${environment} environment!`);
 });
